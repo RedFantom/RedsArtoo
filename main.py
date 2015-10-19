@@ -17,10 +17,25 @@ class sensors:
 
     def distance(position):
         if(position == 'b'):
-
-'''
-Important!
-'''
+            GPIO.output(TRIGB, True)
+            time.sleep(0.00001)
+            GPIO.output(TRIGB, False)
+            while(GPIO.input(ECHOB) == 0):
+                t_one = time.time()
+            while(GPIO.input(ECHOB) == 1):
+                t_two = time.time()
+            deltat = t_two - t_one
+            return round(deltat * 17150, 0)
+        if(position == 'd'):
+            GPIO.output(TRIGD, True)
+            time.sleep(0.00001)
+            GPIO.output(TRIGD, False)
+            while(GPIO.input(ECHOD) == 0):
+                t_one = time.time()
+            while(GPIO.input(ECHOD) == 1):
+                t_two = time.time()
+            deltat = t_two - t_one
+            return round(deltat * 17150, 0)
 
 class functions:
     def setup():
@@ -99,21 +114,24 @@ class functions:
         GPIO.output(SPOT3, False)
         GPIO.output(PWM, False)
 
+        # Start the xbox controller driver
         os.system("sudo xboxdrv --silent")
 
     def cleanup():
+        # Clean up the GPIO and exit the program
         GPIO.cleanup()
         sys.exit()
-        
+
     def remotecontrolcheck():
 
-class remotecontrol:
-
-
 class lights:
-
+    def turnon(lights):
+        if(lights == 4):
 
 class motors:
 
 
 class autonomous:
+
+
+class remotecontrol:
