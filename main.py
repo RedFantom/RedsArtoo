@@ -38,12 +38,13 @@ class sensors:
             return round(deltat * 17150, 0)
 
 class functions:
+    @staticmethod
     def setup():
         # Setup the pins according to the function
         TRIGB = 1
         ECHOB = 2
         TRIGD = 3
-        ECHOB = 4
+        ECHOD = 4
 
         MOTORLP = 5
         MOTORLN = 6
@@ -69,7 +70,9 @@ class functions:
         SPOT3 = 22
 
         PWM = 23
-
+	
+	GPIO.setmode(GPIO.BCM)
+	
         GPIO.setup(TRIGB, GPIO.OUT)
         GPIO.setup(TRIGD, GPIO.OUT)
         GPIO.setup(MOTORLP, GPIO.OUT)
@@ -115,23 +118,11 @@ class functions:
         GPIO.output(PWM, False)
 
         # Start the xbox controller driver
-        os.system("sudo xboxdrv --silent")
+        system("sudo xboxdrv --silent")
 
     def cleanup():
         # Clean up the GPIO and exit the program
         GPIO.cleanup()
         sys.exit()
 
-    def remotecontrolcheck():
-
-class lights:
-    def turnon(lights):
-        if(lights == 4):
-
-class motors:
-
-
-class autonomous:
-
-
-class remotecontrol:
+functions.setup()
