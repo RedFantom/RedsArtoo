@@ -45,12 +45,12 @@ class functions:
         TRIGD = 3
         ECHOB = 4
 
-        MOTORL+ = 5
-        MOTORL- = 6
-        MOTORR+ = 7
-        MOTORR- = 8
-        MOTORD+ = 9
-        MOTORD- = 10
+        MOTORLP = 5
+        MOTORLN = 6
+        MOTORRP = 7
+        MOTORRN = 8
+        MOTORDP = 9
+        MOTORDN = 10
 
         LIGHT1 = 11
         LIGHT2 = 12
@@ -72,12 +72,12 @@ class functions:
 
         GPIO.setup(TRIGB, GPIO.OUT)
         GPIO.setup(TRIGD, GPIO.OUT)
-        GPIO.setup(MOTORL+, GPIO.OUT)
-        GPIO.setup(MOTORL-, GPIO.OUT)
-        GPIO.setup(MOTORR+, GPIO.OUT)
-        GPIO.setup(MOTORR-, GPIO.OUT)
-        GPIO.setup(MOTORD+, GPIO.OUT)
-        GPIO.setup(MOTORD-, GPIO.OUT)
+        GPIO.setup(MOTORLP, GPIO.OUT)
+        GPIO.setup(MOTORLN, GPIO.OUT)
+        GPIO.setup(MOTORRP, GPIO.OUT)
+        GPIO.setup(MOTORRN, GPIO.OUT)
+        GPIO.setup(MOTORDP, GPIO.OUT)
+        GPIO.setup(MOTORDN, GPIO.OUT)
         GPIO.setup(RGB1R, GPIO.OUT)
         GPIO.setup(RGB1G, GPIO.OUT)
         GPIO.setup(RGB1B, GPIO.OUT)
@@ -97,12 +97,12 @@ class functions:
 
         GPIO.output(TRIGB, False)
         GPIO.output(TRIGD, False)
-        GPIO.output(MOTORL+, False)
-        GPIO.output(MOTORL-, False)
-        GPIO.output(MOTORR+, False)
-        GPIO.output(MOTORR-, False)
-        GPIO.output(MOTORD+, False)
-        GPIO.output(MOTORD-, False)
+        GPIO.output(MOTORLP, False)
+        GPIO.output(MOTORLN, False)
+        GPIO.output(MOTORRP, False)
+        GPIO.output(MOTORRN, False)
+        GPIO.output(MOTORDP, False)
+        GPIO.output(MOTORDN, False)
         GPIO.output(RGB1R, False)
         GPIO.output(RGB1G, False)
         GPIO.output(RGB1B, False)
