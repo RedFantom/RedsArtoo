@@ -1,9 +1,9 @@
 # Necessary imports for the program. This version is made on the RPi
 import time
 import random
-import system from os
 import sys
 import RPi.GPIO as GPIO
+from os import system
 
 # Class for the sensors
 class sensors:
