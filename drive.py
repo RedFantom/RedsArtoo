@@ -6,6 +6,7 @@ rightmotor = motors.motors(3, 4)
 domemotor = motors.motors(5, 6)
 dometurned = 0
 
+# Function to drive the droid
 def drive(direction):
     if(direction == "none"):
         leftmotor.setstate(0)
@@ -23,6 +24,7 @@ def drive(direction):
         leftmotor.setstate(-1)
         rightmotor.setstate(-1)
 
+# Function to turn the dome of the droid
 def turndome(degrees):
     if(degrees < 0):
         dometurned = dometurned + degrees
@@ -46,4 +48,3 @@ def turndome(degrees):
         time.sleep(degrees / 360)
         domemotor.setstate(0)
         dometurned = dometurned + degrees
-        
