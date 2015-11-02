@@ -26,11 +26,15 @@ def drive(direction):
 
 # Function to turn the dome of the droid
 def turndome(degrees):
+
+    # < 0 turns the dome
     if(degrees < 0):
         dometurned = dometurned + degrees
         domemotor.setstate(-1)
         time.sleep((degrees * -1) / 360)
         domemotor.setstate(0)
+
+    # 0 resets the dome to its default position
     else if(degrees == 0):
         if(dometurned < 0):
             domemotor.setstate(1)
@@ -42,6 +46,8 @@ def turndome(degrees):
             time.sleep(dometurned / 360)
             domemotor.setstate(0)
             dometurned = 0
+            
+    # > 0 turns the dome
     else if(degrees > 0):
         dometurned = dometurned + degrees
         domemotor.setstate(1)
