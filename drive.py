@@ -35,7 +35,7 @@ def turndome(degrees):
         domemotor.setstate(0)
 
     # 0 resets the dome to its default position
-    else if(degrees == 0):
+    elif(degrees == 0):
         if(dometurned < 0):
             domemotor.setstate(1)
             time.sleep((dometurned * -1) / 360)
@@ -48,7 +48,7 @@ def turndome(degrees):
             dometurned = 0
             
     # > 0 turns the dome
-    else if(degrees > 0):
+    elif(degrees > 0):
         dometurned = dometurned + degrees
         domemotor.setstate(1)
         time.sleep(degrees / 360)
