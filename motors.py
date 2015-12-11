@@ -14,6 +14,13 @@ class motors: # pinpos and pinneg are pins on which the terminals from the motor
 		self.pinpos = pinpos
 		self.pinneg = pinneg
 
+	def pwm(self, speed, state):
+		starttime = time.time()
+		self.setstate(state)
+		time.sleep(0.02 * speed)
+		self.setstate(0)
+		time.sleep(0.02 * (1.0 - speed))
+
 	# The function that starts and stops the motor
 	def setstate(self, direction):
 		if(direction == 1):

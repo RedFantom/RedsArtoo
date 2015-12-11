@@ -2,11 +2,11 @@ import time
 import RPi.GPIO as GPIO
 
 # The class for the lightsensors
-class lightsensors:
-	
+class lightsensor:
+
 	# Sharedvalues
-	pin = 0	
-	
+	pin = 0
+
 	# The constructor to set up the necesssary GPIO pin
 	def __init__(self, pin):
 		GPIO.setup(pin, GPIO.IN)
@@ -16,9 +16,9 @@ class lightsensors:
 	def light(self):
 		return GPIO.input(self.pin)
 
-# The class for the HC-SR04 distance sensors		
+# The class for the HC-SR04 distance sensors
 class distancesensor:
-	
+
 	# Shared Values
 	pintrig = 0
 	pinecho = 0
@@ -29,7 +29,7 @@ class distancesensor:
 		GPIO.setup(pinecho, GPIO.IN)
 		self.pintrig = pintrig
 		self.pinecho = pinecho
-	
+
 	# The function that returns the approximate distance to an object
 	def distance(self):
 		GPIO.output(self.pintrig, True)
