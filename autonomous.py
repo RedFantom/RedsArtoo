@@ -3,7 +3,7 @@ import lights
 import sensors
 import XboxController
 import objects
-import threading
+import thread
 
 # The planning as of 02-12-2015 for the autonomous file is:
 
@@ -45,3 +45,20 @@ import threading
 # Sound direction| True | False
 # ---------------|------|--------
 # colour of back | Green| Yellow
+
+BatteryLow = False
+Distances = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+# This function is written in the assumption that the dome turns at 60RPM at full speed
+def distances():
+    while(BatteryLow == False):
+        TimeTurned = 0.00
+        DegreesTurned = 0.0
+        DistancePositionOne = 0
+        DistancePositionTwo = 20
+        while(TimeTurned <= 1.00):
+            objects.MotorDome.pwm(1, 0.25)
+            DegreesTurned = DegreesTurned + 1.8
+            if(DegreesTurned % 9 == 0):
+                Distances[DistancePositionOne] = objects.DistanceOne.distance()
+                Distances[DistancePositionTwo] = objects.DistanceOne.distance()

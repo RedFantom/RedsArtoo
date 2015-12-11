@@ -1,6 +1,7 @@
 import motors
 import sensors
 import lights
+import RPi.GPIO as GPIO
 
 # Pins on the Raspberry Pi B+, GPIO.BCM
 DistanceSensorOneTrig   =  4
@@ -24,7 +25,6 @@ MotorLeftTwo            = 13
 MotorRightOne           = 19
 MotorRightTwo           = 26
 
-
 # The UART pins are GPIO 14 and 15
 # The SPI pins are GPIO 10 (MOSI), 9 (MISO), 11 (CLOCK), 8 (CE0_N) and 7 (CE1_N)
 # The I2C pins are GPIO 2 (SDA) and 3 (SCL)
@@ -33,6 +33,8 @@ MotorRightTwo           = 26
 # I'll decide what pins to use as soon as I get the chance
 # Because the Pi Zero has more GPIO pins than an MCP20317, I might give the motors two speeds
 # Using PWM would be a possibility too, but the motor controller themselves already use PWM, so it would be using PWM to control a PWM controller
+
+GPIO.setmode(GPIO.BCM)
 
 DistanceSensorOne = sensors.distancesensor(DistanceSensorOneTrig, DistanceSensorOneEcho)
 DistanceSensorTwo = sensors.distancesensor(DistanceSensorTwoTrig, DistanceSensorTwoEcho)
