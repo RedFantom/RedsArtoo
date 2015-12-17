@@ -33,11 +33,26 @@ class distancesensor:
 	# The function that returns the approximate distance to an object
 	def distance(self):
 		GPIO.output(self.pintrig, True)
-        	time.sleep(0.00001)
-        	GPIO.output(self.pintrig, False)
-        	while(GPIO.input(self.pinecho) == 0):
-            		t_one = time.time()
-        	while(GPIO.input(self.pinecho) == 1):
-            		t_two = time.time()
-        	deltat = t_two - t_one
-        	return round(deltat * 17150, 0)
+        time.sleep(0.00001)
+        GPIO.output(self.pintrig, False)
+        while(GPIO.input(self.pinecho) == 0):
+        		t_one = time.time()
+        while(GPIO.input(self.pinecho) == 1):
+        		t_two = time.time()
+        deltat = t_two - t_one
+        return round(deltat * 17150, 0)
+
+class soundsensor:
+
+	# Shared values:
+	pinreturn = 0
+
+	def __init__(self, pinreturn):
+		GPIO.setup(pinreturn, GPIO.IN)
+		self.pinreturn = pinreturn
+
+	def sound(self):
+		if(GPIO.input(self.pinreturn) == 1):
+			return True
+		else:
+			return False

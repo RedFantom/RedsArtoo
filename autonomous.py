@@ -4,6 +4,7 @@ import sensors
 import XboxController
 import objects
 import thread
+import RPi.GPIO as GPIO
 
 # The planning as of 02-12-2015 for the autonomous file is:
 
@@ -48,10 +49,15 @@ import thread
 
 BatteryLow = False
 Distances = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+SoundDirection = 0
+SoundDirectionPresent = False
 
+ShutdownRequested = False
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
-    while(BatteryLow == False):
+    while True:
+        if(ShutdownRequested == True):
+            break
         TimeTurned = 0.00
         DegreesTurned = 0.0
         DistancePositionOne = 0
@@ -59,6 +65,44 @@ def distances():
         while(TimeTurned <= 1.00):
             objects.MotorDome.pwm(1, 0.25)
             DegreesTurned = DegreesTurned + 1.8
-            if(DegreesTurned % 9 == 0):
+            if(DegreesTurned % 9.0 == 0.0):
                 Distances[DistancePositionOne] = objects.DistanceOne.distance()
-                Distances[DistancePositionTwo] = objects.DistanceOne.distance()
+                Distances[DistancePositionTwo] = objects.DistanceTwo.distance()
+                DistancePositionOne = DistancePositionOne + 1
+                DistancePositionTwo = DistancePositionTwo + 1
+            TimeTurned = TimeTurned + 0.02
+        TimeTurned = 0.0
+        DegreesTurned = 0.0
+        while(TimeTurned <= 1.00):
+            objects.MotorDome.pwm(-1, 0.25)
+            TimeTurned = TimeTurned + 0.02
+        TimeTurned = 0
+        if(ShutdownRequested == True):
+            break
+        while(TimeTurned <= 1.00):
+            objects.MotorDome.pwm(-1, 0.25)
+            DegreesTurned = DegreesTurned + 1.8
+            if(DegreesTurned % 9.0 == 0.0):
+                Distances[DistancePositionOne] = objects.DistanceOne.distance()
+                Distances[DistancePositionTwo] = objects.DistanceTwo.distance()
+                DistancePositionOne = DistancePositionOne + 1
+                DistancePositionTwo = DistancePositionTwo + 1
+            TimeTurned = Timeturned + 0.02
+        TimeTurned = 0
+        while(TimeTurned <= 1.00):
+            objects.MotorDome.pwm(1, 0.25)
+            TimeTurned = TimeTurned + 0.02
+        if(ShutdownRequested == True):
+            break
+
+def sound():
+    while True:
+        if(ShutdownRequested == True):
+            break
+    
+
+def ShutdownRequester():
+    GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
+    while(ShutdownRequested == False):
+        if(GPIO.input(ShutdownSwitch) == 1):
+            ShutdownRequested = True

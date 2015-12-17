@@ -25,6 +25,8 @@ MotorLeftTwo            = 13
 MotorRightOne           = 19
 MotorRightTwo           = 26
 
+ShutdownSwitch          =  0
+
 # The UART pins are GPIO 14 and 15
 # The SPI pins are GPIO 10 (MOSI), 9 (MISO), 11 (CLOCK), 8 (CE0_N) and 7 (CE1_N)
 # The I2C pins are GPIO 2 (SDA) and 3 (SCL)
