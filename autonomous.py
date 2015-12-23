@@ -3,7 +3,7 @@ import lights
 import sensors
 import XboxController
 import objects
-import thread
+import multiprocessing
 import RPi.GPIO as GPIO
 
 # The planning as of 02-12-2015 for the autonomous file is:
@@ -41,7 +41,7 @@ import RPi.GPIO as GPIO
 # As for the Sensors:
 # % of directions| >50% | 50% with 10% margin | <50%
 # ---------------|------|---------------------|------
-# colour of front| Blue | Purple              | Red
+# colour of front| Blue |       Purple        | Red
 #
 # Sound direction| True | False
 # ---------------|------|--------
@@ -95,14 +95,12 @@ def distances():
         if(ShutdownRequested == True):
             break
 
-def sound():
-    while True:
-        if(ShutdownRequested == True):
-            break
-    
-
 def ShutdownRequester():
     GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
     while(ShutdownRequested == False):
         if(GPIO.input(ShutdownSwitch) == 1):
             ShutdownRequested = True
+
+def main():
+    DistanceProcess = multiprocessing.Process(target = distance)
+    ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
