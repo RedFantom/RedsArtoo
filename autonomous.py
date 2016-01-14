@@ -52,6 +52,7 @@ Distances = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 SoundDirection = 0
 SoundDirectionPresent = False
 
+
 ShutdownRequested = False
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
@@ -96,10 +97,25 @@ def distances():
             break
 
 def ShutdownRequester():
+    # ShutdownRequester function to check the whether the shutdown switch is turned on
     GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
     while(ShutdownRequested == False):
         if(GPIO.input(ShutdownSwitch) == 1):
             ShutdownRequested = True
+
+def sensors():
+    while True:
+        if(ShutdownRequested == True):
+            break
+
+        if(SoundDirectionPresent == True):
+            objects.SensorTwo(0, 1, 0)
+        elif(SoundDirectionPresent == False):
+            objects.SensorTwo(1, 1, 0)
+        else:
+            raise ValueError('SoundDirectionPresent not set')
+
+        if()
 
 def main():
     DistanceProcess = multiprocessing.Process(target = distance)
