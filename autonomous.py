@@ -5,6 +5,7 @@ import XboxController
 import objects
 import multiprocessing
 import RPi.GPIO as GPIO
+from i2clibraries import i2c_hmc5883l
 
 # The planning as of 02-12-2015 for the autonomous file is:
 
@@ -51,7 +52,8 @@ BatteryLow = False
 Distances = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 SoundDirection = 0
 SoundDirectionPresent = False
-
+CompassHeadingDegrees = 0
+CompassHeadingMinutes = 0       # This really confused me at first, but apparently minutes are one-sixtieth of a degree
 
 ShutdownRequested = False
 # This function is written in the assumption that the dome turns at 60RPM at full speed
@@ -103,19 +105,32 @@ def ShutdownRequester():
         if(GPIO.input(ShutdownSwitch) == 1):
             ShutdownRequested = True
 
-def sensors():
-    while True:
+def compass():
+    # Create an object for the electronic compass
+    compass = i2c_hmc5883l.i2c_hmc5883l(1)
+    # Set the compass to measure continuously
+    compass.setContinuousMode()
+    # This is where it gets tricky. The setDeclination function is to set the magnetic declination for the place you want to use the compass
+    # For The Netherlands the magnetic Declination is 0,5 degrees per 7 radialdegrees
+    compass.setDeclination(0.5, 7)
+    while(True):
         if(ShutdownRequested == True):
             break
-
-        if(SoundDirectionPresent == True):
-            objects.SensorTwo(0, 1, 0)
-        elif(SoundDirectionPresent == False):
-            objects.SensorTwo(1, 1, 0)
         else:
-            raise ValueError('SoundDirectionPresent not set')
+            (CompassHeadingDegrees, CompassHeadingMinutes) = compass.getHeading()
 
-        if()
+
+# I've got a whole new plan for the RGB LED's, so this function is on hold for now.
+# def sensors():
+#    while True:
+#        if(ShutdownRequested == True):
+#            break
+#        if(SoundDirectionPresent == True):
+#            objects.SensorTwo(0, 1, 0)
+#        elif(SoundDirectionPresent == False):
+#            objects.SensorTwo(1, 1, 0)
+#        else:
+#            raise ValueError('SoundDirectionPresent not set')
 
 def main():
     DistanceProcess = multiprocessing.Process(target = distance)
