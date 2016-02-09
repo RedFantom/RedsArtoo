@@ -59,29 +59,43 @@ ShutdownRequested = False
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
     while True:
+        # The ShutdownRequested needs to be checked multiple times, because the whole function takes a lot of time to complete.
+        # The function is only stopped when the dome is in a normal position
         if(ShutdownRequested == True):
             break
+
+        # Declaring variables
         TimeTurned = 0.00
         DegreesTurned = 0.0
+        # The Distance sensors will not be looking straight forward and backward, so these values will be changed in time.
         DistancePositionOne = 0
         DistancePositionTwo = 20
+
+        # Here the dome gets turning. The pwm function from takes 0.02 seconds, so the code should be executed fifty times
         while(TimeTurned <= 1.00):
+            # Turn the dome and record the degrees turned
             objects.MotorDome.pwm(1, 0.25)
             DegreesTurned = DegreesTurned + 1.8
+            # Every 9.0 degrees the distances from the distance sensors in the dome needs to be recorded.
             if(DegreesTurned % 9.0 == 0.0):
                 Distances[DistancePositionOne] = objects.DistanceOne.distance()
                 Distances[DistancePositionTwo] = objects.DistanceTwo.distance()
                 DistancePositionOne = DistancePositionOne + 1
                 DistancePositionTwo = DistancePositionTwo + 1
+            # Record the time turned so the function quits after 50 times
             TimeTurned = TimeTurned + 0.02
+        # Reset the TimeTurned to be ready for the second quarter turn.
         TimeTurned = 0.0
         DegreesTurned = 0.0
+        # Turn the dome back. The distances are not measured again. I might change this in the future if necessary.
         while(TimeTurned <= 1.00):
             objects.MotorDome.pwm(-1, 0.25)
             TimeTurned = TimeTurned + 0.02
         TimeTurned = 0
+        # Check the ShutdownRequested again, the dome is in normal position
         if(ShutdownRequested == True):
             break
+        # Do the same thing as before, but now in the opposite direction.
         while(TimeTurned <= 1.00):
             objects.MotorDome.pwm(-1, 0.25)
             DegreesTurned = DegreesTurned + 1.8
@@ -91,10 +105,13 @@ def distances():
                 DistancePositionOne = DistancePositionOne + 1
                 DistancePositionTwo = DistancePositionTwo + 1
             TimeTurned = Timeturned + 0.02
+        # Reset the TimeTurned
         TimeTurned = 0
+        # Turn the dome back again to normal position
         while(TimeTurned <= 1.00):
             objects.MotorDome.pwm(1, 0.25)
             TimeTurned = TimeTurned + 0.02
+        # Check the ShutdownRequested again.
         if(ShutdownRequested == True):
             break
 
@@ -103,10 +120,12 @@ def ShutdownRequester():
     GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
     while(ShutdownRequested == False):
         if(GPIO.input(ShutdownSwitch) == 1):
+            # If the shutdown switch is pressed, set the ShutDownRequested to True
             ShutdownRequested = True
+        # If True, the while loop will stop and the function will end.
 
 def compass():
-    # Create an object for the electronic compass
+    # Create an object for the electronic compass, should be moved to the objects file
     compass = i2c_hmc5883l.i2c_hmc5883l(1)
     # Set the compass to measure continuously
     compass.setContinuousMode()
@@ -114,11 +133,12 @@ def compass():
     # For The Netherlands the magnetic Declination is 0,5 degrees per 7 radialdegrees
     compass.setDeclination(0.5, 7)
     while(True):
+        # Break when a shutdown is requested
         if(ShutdownRequested == True):
             break
+        # Else update the heading variables of the droid
         else:
             (CompassHeadingDegrees, CompassHeadingMinutes) = compass.getHeading()
-
 
 # I've got a whole new plan for the RGB LED's, so this function is on hold for now.
 # def sensors():
