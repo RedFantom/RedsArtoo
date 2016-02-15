@@ -5,6 +5,7 @@ import XboxController
 import objects
 import multiprocessing
 import RPi.GPIO as GPIO
+import accelerometer
 from i2clibraries import i2c_hmc5883l
 
 # The planning as of 02-12-2015 for the autonomous file is:
@@ -139,6 +140,13 @@ def compass():
         # Else update the heading variables of the droid
         else:
             (CompassHeadingDegrees, CompassHeadingMinutes) = compass.getHeading()
+
+def sound():
+    while True:
+        if(ShutDownRequested == True):
+            break
+        else:
+            while(objects.SoundSensorOne.sound() == False && objects.SoundSensorTwo.sound() == False && objects.SounSensorThree.sound() == False)
 
 # I've got a whole new plan for the RGB LED's, so this function is on hold for now.
 # def sensors():
