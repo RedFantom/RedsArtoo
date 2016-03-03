@@ -3,6 +3,7 @@ import sensors
 import lights
 import RPi.GPIO as GPIO
 import smbus
+import neopixel
 
 # Pins on the Raspberry Pi B+, GPIO.BCM
 DistanceSensorOneTrig   =  4
@@ -10,12 +11,8 @@ DistanceSensorOneEcho   = 17
 DistanceSensorTwoTrig   = 18
 DistanceSensorTwoEcho   = 23
 
-SensorOneRed            = 27
-SensorOneGreen          = 22
-SensorOneBlue           = 24
-SensorTwoRed            = 16
-SensorTwoGreen          = 20
-SensorTwoBlue           = 21
+SensorOnePWMpin         = 0
+SensorTwoPWMpin         = 0
 
 OnOffSwitch             = 25
 
@@ -26,7 +23,8 @@ MotorLeftTwo            = 13
 MotorRightOne           = 19
 MotorRightTwo           = 26
 
-ShutdownSwitch          =  0
+ShutdownSwitch          = 0
+BatterySensor           = 0
 
 # The UART pins are GPIO 14 and 15
 # The SPI pins are GPIO 10 (MOSI), 9 (MISO), 11 (CLOCK), 8 (CE0_N) and 7 (CE1_N)
@@ -50,9 +48,8 @@ GPIO.setmode(GPIO.BCM)
 DistanceSensorOne = sensors.distancesensor(DistanceSensorOneTrig, DistanceSensorOneEcho)
 DistanceSensorTwo = sensors.distancesensor(DistanceSensorTwoTrig, DistanceSensorTwoEcho)
 
-SensorOne = lights.rgbled(SensorOneRed, SensorOneGreen, SensorOneBlue)
-SensorTwo = lights.rgbled(SensorTwoRed, SensorTwoGreen, SensorTwoBlue)
-
+SensorOne = lights.pwmled(SensorOnePWM, 4, 800000, 5, True)
+SensorTwo = lights.pwmled(SensorTwoPWM, 4, 800000, 5, True)
 MotorDome = motors.motors(MotorDomeOne, MotorDomeTwo)
 MotorLeft = motors.motors(MotorLeftOne, MotorLeftTwo)
 MotorRight = motors.motors(MotorRightOne, MotorRightTwo)

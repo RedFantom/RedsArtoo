@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+import neopixel
 
 # Class to control the spotlights in the holoprojectors of the droid
 class spotlight:
@@ -35,3 +36,13 @@ class rgbled:
         GPIO.output(self.pinred, red)
         GPIO.output(self.pingreen, green)
         GPIO.output(self.pinblue, blue)
+
+class pwmled:
+
+    def __init__(self, LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT):
+        light = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT)
+        light.begin()
+
+    def setcolor(self, position, red, green, blue):
+        light.setPizelColorRGB(position, red, green, blue)
+        light.show()

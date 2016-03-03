@@ -60,3 +60,5 @@ def update():
 
     xRotationValue = xRotation(AccelX, AccelY, AccelZ)
     yRotationVAlue = yRotation(AccelX, AccelY, AccelZ)
+
+    return (xRotationValue, yRotationValue)

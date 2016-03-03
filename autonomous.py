@@ -4,8 +4,9 @@ import sensors
 import XboxController
 import objects
 import multiprocessing
-import RPi.GPIO as GPIO
 import accelerometer
+import time
+import RPi.GPIO as GPIO
 from i2clibraries import i2c_hmc5883l
 
 # The planning as of 02-12-2015 for the autonomous file is:
@@ -51,12 +52,16 @@ from i2clibraries import i2c_hmc5883l
 
 BatteryLow = False
 Distances = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+DirectionAccessability = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False,]
 SoundDirection = 0
 SoundDirectionPresent = False
 CompassHeadingDegrees = 0
 CompassHeadingMinutes = 0       # This really confused me at first, but apparently minutes are one-sixtieth of a degree
-
+xRotation = 0
+yRotation = 0
 ShutdownRequested = False
+CurrentDirection = 0
+ChosenDirection = 0
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
     while True:
@@ -119,11 +124,14 @@ def distances():
 def ShutdownRequester():
     # ShutdownRequester function to check the whether the shutdown switch is turned on
     GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
+    GPIO.setup(objects.BatterySensor, GPIO.IN)
     while(ShutdownRequested == False):
-        if(GPIO.input(ShutdownSwitch) == 1):
+        if(GPIO.input(objects.ShutdownSwitch) == 1):
             # If the shutdown switch is pressed, set the ShutDownRequested to True
             ShutdownRequested = True
-        # If True, the while loop will stop and the function will end.
+            break
+        if(GPIO.input(BatterySensor) == 0):
+            BatteryLow = True
 
 def compass():
     # Create an object for the electronic compass, should be moved to the objects file
@@ -141,25 +149,101 @@ def compass():
         else:
             (CompassHeadingDegrees, CompassHeadingMinutes) = compass.getHeading()
 
-def sound():
+def Accelerometer():
     while True:
         if(ShutDownRequested == True):
+            Break
+        else:
+            (xRotation, yRotation) = accelerometer.update()
+
+def sound():
+    while True:
+        if(ShutdownRequested == True):
             break
         else:
-            while(objects.SoundSensorOne.sound() == False && objects.SoundSensorTwo.sound() == False && objects.SounSensorThree.sound() == False)
-
-# I've got a whole new plan for the RGB LED's, so this function is on hold for now.
-# def sensors():
-#    while True:
-#        if(ShutdownRequested == True):
-#            break
-#        if(SoundDirectionPresent == True):
-#            objects.SensorTwo(0, 1, 0)
-#        elif(SoundDirectionPresent == False):
-#            objects.SensorTwo(1, 1, 0)
-#        else:
-#            raise ValueError('SoundDirectionPresent not set')
+            while(objects.SoundSensorOne.sound() == True or objects.SoundSensorTwo.sound == True or objects.SoundSensorThree.sound() == True):
+                if(ShutdownRequested == True):
+                    break
+            while(objects.SoundSensorOne.sound() == False and objects.SoundSensorTwo.sound() == False and objects.SoundSensorThree() == False):
+                if(ShutdownRequested == True):
+                    break
+            while True:
+                SensorOneDetected = False
+                SensorTwoDetected = False
+                SensorThreeDetected = False
+                if(objects.SoundSensorOne.sound() == True and SoundOneDetected == False):
+                    SensorOneTime = time.time()
+                if(objects.SoundSensorTwo.sound() == True and SoundTwoDetected == False):
+                    SensorTwoTime = time.time()
+                if(objects.SoundSensorThree.sound() == True and SoundThreeDetected == False):
+                    SensorThreeTime = time.time()
+                if(SensorOneDetected == True and SensorTwoDetected == True and SensorThreeDetected == True):
+                    break
+            if(SensorOneTime < SensorTwoTime and SensorOneTime < SensorThreeTime):
+                SoundDirectionPresent = True
+                SoundDirection = 0
+            elif(SensorTwoTime < SensorOneTime and SensorTwoTime < SensorThreeTime):
+                SoundDirectionPresent = True
+                SoundDirection = 12
+            elif(SensorThreeTime < SensorOneTime and SensorThreeTimee < SensorTwoTime):
+                SoundDirectionPresent = True
+                SoundDirection = 26
+            else:
+                SoundDirectionPresent = False
+                raise ValueError('SoundDirection not present')
 
 def main():
     DistanceProcess = multiprocessing.Process(target = distance)
     ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
+    CompassProcess = multiprocessing.Process(target = compass)
+    AccelerometerProcess = multiprocessing.Process(target = Accelerometer)
+    while True:
+        if(ShutdownRequested == True):
+            break
+        DistanceNumber = 0
+        for distance in Distances:
+            if(distance <= 50 and distance > 0):
+                DirectionAccessability[DistanceNumber] == False
+            elif(distance > 50):
+                DirectionAccessability[DistanceNumber] == True
+            elif(distance <= 0):
+                raise ValueError 'A Distance smaller than or equal to Zero'
+        if(SoundDirectionPresent == True):
+            if(DirectionAccessability[SoundDirection] == True and DirectionAccessability[SoundDirection + 1] == True and DirectionAccessability[SoundDirection - 1] == True):
+                if(SoundDirection == 0):
+                    ChosenDirection = 0
+                elif(SoundDirection == 12):
+                    ChosenDirection = 120
+                elif(SoundDirection == 26):
+                    ChosenDirection = 240
+            elif(DirectionAccessability[SoundDirection] == False):
+                if(DirectionAccessability[SoundDirection + 1] == True and DirectionAccessability[SoundDirection + 2] == True and DirectionAccessability[SoundDirection + 3] == True):
+                    ChosenDirection = (SoundDirection + 2) * 9
+                elif(DirectionAccessability[SoundDirection - 1] == True and DirectionAccessability[SoundDirection - 2] == True and DirectionAccessability[SoundDirection - 3] == True):
+                    ChosenDirection = (SoundDirection - 2) * 9
+                elif(DirectionAccessability[SoundDirection + 2] == True and DirectionAccessability[SoundDirection + 3] == True and DirectionAccessability[SoundDirection + 4] == True):
+                    ChosenDirection = (SoundDirection + 3) * 9
+                elif(DirectionAccessability[SoundDirection - 2] == True and DirectionAccessability[SoundDirection - 3] == True and DirectionAccessability[SoundDirection - 4] == True):
+                    ChosenDirection = (SoundDirection - 3) * 9
+                else:
+                    AccessibleNumber = 0
+                    for Accessible in DirectionAccessability:
+                        if(Accessible = True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
+                            ChosenDirection = AccessibleNumber * 9
+                            break
+                        elif(DirectionAccessability[-AccessibleNumber] == True and DirectionAccessability[-AccessibleNumber - 1] == True and DirectionAccessability[-AccessibleNumber - 2] == True):
+                            ChosenDirection = 360 - (AccessibleNumber * 9)
+                            break
+                        else:
+                            AccessibleNumber = AccessibleNumber + 1
+        else:
+            AccessibleNumber = 0
+            for Accessible in DirectionAccessability:
+                if(Accessible = True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
+                    ChosenDirection = AccessibleNumber * 9
+                    break
+                elif(DirectionAccessability[-AccessibleNumber] == True and DirectionAccessability[-AccessibleNumber - 1] == True and DirectionAccessability[-AccessibleNumber - 2] == True):
+                    ChosenDirection = 360 - (AccessibleNumber * 9)
+                    break
+                else:
+                    AccessibleNumber = AccessibleNumber + 1
