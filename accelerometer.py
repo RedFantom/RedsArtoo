@@ -5,6 +5,7 @@ import objects
 # Registers for power management
 PowerManagementOne = 0x06b
 PowermanagementTwo = 0x06c
+address = 0x00
 
 # The following functions I got from the Bitify blog. I have rewritten them to suit my style
 def ReadByte(adr):

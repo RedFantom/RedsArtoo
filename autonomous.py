@@ -207,7 +207,7 @@ def main():
             elif(distance > 50):
                 DirectionAccessability[DistanceNumber] == True
             elif(distance <= 0):
-                raise ValueError 'A Distance smaller than or equal to Zero'
+                raise ValueError ('A Distance smaller than or equal to Zero')
         if(SoundDirectionPresent == True):
             if(DirectionAccessability[SoundDirection] == True and DirectionAccessability[SoundDirection + 1] == True and DirectionAccessability[SoundDirection - 1] == True):
                 if(SoundDirection == 0):
@@ -228,7 +228,7 @@ def main():
                 else:
                     AccessibleNumber = 0
                     for Accessible in DirectionAccessability:
-                        if(Accessible = True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
+                        if(Accessible == True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
                             ChosenDirection = AccessibleNumber * 9
                             break
                         elif(DirectionAccessability[-AccessibleNumber] == True and DirectionAccessability[-AccessibleNumber - 1] == True and DirectionAccessability[-AccessibleNumber - 2] == True):
@@ -239,7 +239,7 @@ def main():
         else:
             AccessibleNumber = 0
             for Accessible in DirectionAccessability:
-                if(Accessible = True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
+                if(Accessible == True and DirectionAccessability[AccessibleNumber + 1] == True and DirectionAccessability[AccessibleNumber + 2] == True):
                     ChosenDirection = AccessibleNumber * 9
                     break
                 elif(DirectionAccessability[-AccessibleNumber] == True and DirectionAccessability[-AccessibleNumber - 1] == True and DirectionAccessability[-AccessibleNumber - 2] == True):
