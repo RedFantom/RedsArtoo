@@ -38,6 +38,10 @@ SoundSensorThreePin = 0
 bus = smbus.SMBus(1)
 AcceleroMeterAddress = 0x68
 
+# The motors run at a certain speeds, this value is in degrees per second when one motor is running at full speed
+TurningRate = 1
+# The speed the droid travels at when at full speed in forward direction in cm/sec
+TravelSpeed = 1
 # Since I've decided to use a Raspberry Pi Zero instead of an MCP20317 chip, the pinout has changed
 # I'll decide what pins to use as soon as I get the chance
 # Because the Pi Zero has more GPIO pins than an MCP20317, I might give the motors two speeds

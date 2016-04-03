@@ -247,3 +247,22 @@ def main():
                     break
                 else:
                     AccessibleNumber = AccessibleNumber + 1
+        AccesibleDirection = AccesibleNumber * 9
+        if(ShutDownRequested == True):
+            break
+        if(AccesibleDirection < 0):
+            objects.MotorLeft.setstate(1)
+            time.sleep(AccessibleDirection * -1 / objects.TurningRate)
+            objects.MotorLeft.setstate(0)
+        elif(AccessibleDirection > 0):
+            objects.MotorRight.setstate(1)
+            time.sleep(AccessibleDirection / objects.TurningRate)
+            objects.MotorRight.setstate(0)
+        elif(AccessibleDirection == 0):
+            objects.MotorLeft.setstate(1)
+            objects.MotorRight.setstate(1)
+            time.sleep(Directions[18] / objects.TravelSpeed)
+            objects.MotorLeft.setstate(0)
+            objects.MotorRight.setstate(0)
+        if(ShutDownRequested == True):
+            break
