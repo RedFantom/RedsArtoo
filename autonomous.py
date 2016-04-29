@@ -130,7 +130,7 @@ def ShutdownRequester():
             # If the shutdown switch is pressed, set the ShutDownRequested to True
             ShutdownRequested = True
             break
-        if GPIO.input(BatterySensor) == 0:
+        if GPIO.input(BatterySensor == 0:
             BatteryLow = True
 
 def compass():
@@ -151,7 +151,7 @@ def compass():
 
 def Accelerometer():
     while True:
-        if(ShutDownRequested == True):
+        if ShutDownRequested:
             Break
         else:
             (xRotation, yRotation) = accelerometer.update()
@@ -185,7 +185,7 @@ def sound():
             elif SensorTwoTime < SensorOneTime and SensorTwoTime < SensorThreeTime:
                 SoundDirectionPresent = True
                 SoundDirection = 12
-            elif SensorThreeTime < SensorOneTime and SensorThreeTimee < SensorTwoTime:
+            elif SensorThreeTime < SensorOneTime and SensorThreeTime < SensorTwoTime:
                 SoundDirectionPresent = True
                 SoundDirection = 26
             else:
