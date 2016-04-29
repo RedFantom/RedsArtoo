@@ -23,13 +23,13 @@ class motors: # pinpos and pinneg are pins on which the terminals from the motor
 
 	# The function that starts and stops the motor
 	def setstate(self, direction):
-		if(direction == 1):
+		if direction == 1:
 			GPIO.output(self.pinpos, True)
 			GPIO.output(self.pinneg, False)
-		elif(direction == -1):
+		elif direction == -1:
 			GPIO.output(self.pinneg, True)
 			GPIO.output(self.pinpos, False)
-		elif(direction == 0):
+		elif direction == 0:
 			GPIO.output(self.pinpos, False)
 			GPIO.output(self.pinneg, False)
 		else:
