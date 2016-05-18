@@ -1,4 +1,4 @@
-import drive
+import motors
 import lights
 import sensors
 import XboxController
@@ -135,7 +135,7 @@ def ShutdownRequester():
             # If the shutdown switch is pressed, set the ShutDownRequested to True
             ShutdownRequested = True
             break
-        if GPIO.input(BatterySensor == 0:
+        if GPIO.input(BatterySensor) == 0:
             BatteryLow = True
 
 
@@ -234,7 +234,7 @@ def lights():
                     intensity = intensity - 1
                     time.sleep(0.005)
             else:
-                raise.ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
+                raise ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
         if not SoundDirectionPresent:
             if SensorTwoCurrentState == "none":
                 indexLights = 0
@@ -262,7 +262,7 @@ def lights():
                 SensorTwo.show()
                 SensorTwoCurrentState = "yellow"
             else:
-                raise.ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
+                raise ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
         if ShutdownRequested:
             break
         DirectionAccessabilityPercentage = 0
@@ -286,7 +286,7 @@ def lights():
                     indexLights = indexLights + 1
                 SensorOne.show()
                 SensorOneCurrentState = "red"
-            elif SensorOneCurrentState == "blue"
+            elif SensorOneCurrentState == "blue":
                 intensityOne = 0
                 intensityTwo = 255
                 while intensityOne < 256:
@@ -298,7 +298,7 @@ def lights():
                     intensityOne = intensityOne + 1
                     time.sleep(0.05)
                 SensorOneCurrentState = "red"
-            elif SensorOneCurrentState == "purple"
+            elif SensorOneCurrentState == "purple":
                 intensityOne = 255
                 while intesityOne > -1:
                     indexLights = 0
@@ -310,7 +310,7 @@ def lights():
                     time.sleep(0.05)
                 SensorOneCurrentState = "red"
             else:
-                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
+                raise ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         elif DirectionAccessabilityPercentage >= 40 and DirectionAccessabilityPercentage <= 60:
             if SensorOneCurrentState == "blue":
                 intensityOne = 0
@@ -342,7 +342,7 @@ def lights():
                     time.sleep(0.05)
                 SensorOneCurrentState = "purple"
             else:
-                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
+                raise ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         elif DirectionAccessabilityPercentage > 60:
             if SensorOneCurrentState == "red":
                 intensityOne = 0
@@ -376,9 +376,9 @@ def lights():
                 SensorOne.show()
                 SensorOneCurrentState = "blue"
             else:
-                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
+                raise ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         else:
-            raise.ValueError('The DirectionAccessabilityPercentage is a complex number, or non-existent')
+            raise ValueError('The DirectionAccessabilityPercentage is a complex number, or non-existent')
 
 
 # Work to do comes here
@@ -410,11 +410,11 @@ def drive():
             elif not DirectionAccessability[SoundDirection]:
                 if DirectionAccessability[SoundDirection + 1]  and DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3]:
                     ChosenDirection = (SoundDirection + 2) * 9
-                elif(DirectionAccessability[SoundDirection - 1] and DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3]:
+                elif DirectionAccessability[SoundDirection - 1] and DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3]:
                     ChosenDirection = (SoundDirection - 2) * 9
-                elif(DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3] and DirectionAccessability[SoundDirection + 4]:
+                elif DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3] and DirectionAccessability[SoundDirection + 4]:
                     ChosenDirection = (SoundDirection + 3) * 9
-                elif(DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3] and DirectionAccessability[SoundDirection - 4]:
+                elif DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3] and DirectionAccessability[SoundDirection - 4]:
                     ChosenDirection = (SoundDirection - 3) * 9
                 else:
                     AccessibleNumber = 0
@@ -440,7 +440,7 @@ def drive():
                     AccessibleNumber = AccessibleNumber + 1
 
         if ChosenDirection > 360:
-            raise.ValueError('A direction larger than 360 degrees was chosen')
+            raise ValueError('A direction larger than 360 degrees was chosen')
         if ChosenDirection > 180:
             ChosenDirection = (ChosenDirection - 180) * -1
         elif ChosenDirection < -180:
@@ -477,7 +477,7 @@ def drive():
                     time.sleep(0.001)
                 objects.MotorLeft.setstate(0)
             elif ChosenDirection == 0:
-                raise.ValueError('No turn needed while TurnNeeded is True')
+                raise ValueError('No turn needed while TurnNeeded is True')
             elif ChosenDirection > 0:
                 objects.MotorRight.setstate(1)
                 while CompassHeadingDegrees != NewDirection:
@@ -503,3 +503,5 @@ def ShutDown():
         if AccelAlive:
             AccelerometerProcess.terminate()
     sys.exit()
+
+drive()
