@@ -7,6 +7,7 @@ import multiprocessing
 import accelerometer
 import time
 import RPi.GPIO as GPIO
+import sys
 from i2clibraries import i2c_hmc5883l
 
 # The planning as of 02-12-2015 for the autonomous file is:
@@ -62,6 +63,13 @@ yRotation = 0
 ShutdownRequested = False
 CurrentDirection = 0
 ChosenDirection = 0
+TurnNeeded = False
+
+DistanceProcess = multiprocessing.Process(target = distance)
+ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
+CompassProcess = multiprocessing.Process(target = compass)
+AccelerometerProcess = multiprocessing.Process(target = Accelerometer)
+
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
     while True:
@@ -133,6 +141,7 @@ def ShutdownRequester():
         if GPIO.input(BatterySensor == 0:
             BatteryLow = True
 
+
 def compass():
     # Create an object for the electronic compass, should be moved to the objects file
     compass = i2c_hmc5883l.i2c_hmc5883l(1)
@@ -192,11 +201,11 @@ def sound():
                 SoundDirectionPresent = False
                 raise ValueError('SoundDirection not present')
 
-def main():
-    DistanceProcess = multiprocessing.Process(target = distance)
-    ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
-    CompassProcess = multiprocessing.Process(target = compass)
-    AccelerometerProcess = multiprocessing.Process(target = Accelerometer)
+def drive():
+    DistanceProcess.start()
+    ShutdownRequesterProcess.start()
+    CompassProcess.start()
+    AccelerometerProcess.start()
     while True:
         if ShutdownRequested:
             break
@@ -238,31 +247,77 @@ def main():
                             AccessibleNumber = AccessibleNumber + 1
         else:
             AccessibleNumber = 0
-            for Accessible in DirectionAccessability:
-                if Accessible and DirectionAccessability[AccessibleNumber + 1] and DirectionAccessability[AccessibleNumber + 2]:
-                    ChosenDirection = AccessibleNumber * 9
+            for Accessible in DirectionAccessAbility:
+                if Accessible and DirectionAccessAbility[AccessibleNumber + 1] and DirectionAccessAbility[AccessibleNumber + 2]:
+                    ChosenDirection = Accessible * 9
                     break
                 elif DirectionAccessability[-AccessibleNumber] and DirectionAccessability[-AccessibleNumber - 1] and DirectionAccessability[-AccessibleNumber - 2]:
-                    ChosenDirection = 360 - (AccessibleNumber * 9)
+                    ChosenDirection = Accessible * 9
                     break
                 else:
                     AccessibleNumber = AccessibleNumber + 1
-        AccesibleDirection = AccesibleNumber * 9
-        if(ShutDownRequested == True):
-            break
-        if(AccesibleDirection < 0):
+
+        if ChosenDirection > 360:
+            raise.ValueError('A direction larger than 360 degrees was chosen')
+        if ChosenDirection > 180:
+            ChosenDirection = (ChosenDirection - 180) * -1
+        elif ChosenDirection < -180:
+            ChosenDirection = (ChosenDirection + 180) * -1
+        if ChosenDirection == 0:
+            TurnNeeded = False
+        else:
+            TurnNeeded = True
+
+        CurrentDirection = CompassHeadingDegrees
+        NewDirection = CurrentDirection + ChosenDirection
+
+        if NewDirection < 0:
+            NewDirection = NewDirection * -1 + 180
+        elif NewDirection > 360:
+            NewDirection = NewDirection - 360
+        elif NewDirection == 360:
+            NewDirection = 0
+
+        if not TurnNeeded:
+            if ShutDownRequested:
+                break
             objects.MotorLeft.setstate(1)
-            time.sleep(AccessibleDirection * -1 / objects.TurningRate)
-            objects.MotorLeft.setstate(0)
-        elif(AccessibleDirection > 0):
             objects.MotorRight.setstate(1)
-            time.sleep(AccessibleDirection / objects.TurningRate)
-            objects.MotorRight.setstate(0)
-        elif(AccessibleDirection == 0):
-            objects.MotorLeft.setstate(1)
-            objects.MotorRight.setstate(1)
-            time.sleep(Directions[18] / objects.TravelSpeed)
+            time.sleep(0.5)
             objects.MotorLeft.setstate(0)
             objects.MotorRight.setstate(0)
+        if TurnNeeded:
+            if ShutDownRequested:
+                break
+            if ChosenDirection < 0:
+                objects.MotorLeft.setstate(1)
+                while CompassHeadingDegrees != NewDirection:
+                    time.sleep(0.001)
+                objects.MotorLeft.setstate(0)
+            elif ChosenDirection == 0:
+                raise.ValueError('No turn needed while TurnNeeded is True')
+            elif ChosenDirection > 0:
+                objects.MotorRight.setstate(1)
+                while CompassHeadingDegrees != NewDirection:
+                    time.sleep(0.001)
+                objects.MotorRight.setstate(0)
         if ShutDownRequested:
             break
+
+def ShutDown():
+    GPIO.cleanup()
+    if DistanceProcess.is_alive() or ShutdownRequesterProcess.is_alive() or CompassProcess.is_alive() or AccelerometerProcess.is_alive():
+        time.sleep(5)
+        DistanceAlive = DistanceProcess.is_alive()
+        ShutdownReqAlive = ShutDownRequesterProcess.is_alive()
+        CompassAlive = CompassProcess.is_alive()
+        AccelAlive = AccelerometerProcess.is_alive()
+        if DistanceAlive:
+            DistanceProcess.terminate()
+        if ShutDownReqAlive:
+            ShutDownRequesterProcess.terminate()
+        if CompassAlive:
+            CompassProcess.terminate()
+        if AccelAlive:
+            AccelerometerProcess.terminate()
+    sys.exit()
