@@ -13,6 +13,9 @@ DistanceSensorTwoEcho   = 23
 
 SensorOnePWMpin         = 0
 SensorTwoPWMpin         = 0
+SensorAmountOfLeds      = 4
+SpotLightOnePin         = 0
+SpotLightTwoPin         = 0
 
 OnOffSwitch             = 25
 
@@ -52,8 +55,12 @@ GPIO.setmode(GPIO.BCM)
 DistanceSensorOne = sensors.distancesensor(DistanceSensorOneTrig, DistanceSensorOneEcho)
 DistanceSensorTwo = sensors.distancesensor(DistanceSensorTwoTrig, DistanceSensorTwoEcho)
 
-SensorOne = neopixel.Adafruit_NeoPixel(4, SensorOnePWMpin, 800000, 5, False)
-SensorTwo = neopixel.Adafruit_NeoPixel(4, SensorTwoPWMpin, 800000, 5, False)
+SensorOne = neopixel.Adafruit_NeoPixel(SensorAmountOfLeds, SensorOnePWMpin, 800000, 5, False)
+SensorTwo = neopixel.Adafruit_NeoPixel(SensorAmountOfLeds, SensorTwoPWMpin, 800000, 5, False)
+
+SpotLightOne = lights.spotlight(SpotLightOnePin)
+SpotLightTwo = lights.spotlight(SpotLightTwoPin)
+
 MotorDome = motors.motors(MotorDomeOne, MotorDomeTwo)
 MotorLeft = motors.motors(MotorLeftOne, MotorLeftTwo)
 MotorRight = motors.motors(MotorRightOne, MotorRightTwo)
@@ -61,3 +68,8 @@ MotorRight = motors.motors(MotorRightOne, MotorRightTwo)
 SoundSensorOne = sensors.soundsensor(SoundSensorOnePin)
 SoundSensorTwo = sensors.soundsensor(SoundSensorTwoPin)
 SoundSensorThree = sensors.soundsensor(SoundSensorThreePin)
+
+DistanceProcess = multiprocessing.Process(target = distance)
+ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
+CompassProcess = multiprocessing.Process(target = compass)
+AccelerometerProcess = multiprocessing.Process(target = Accelerometer)

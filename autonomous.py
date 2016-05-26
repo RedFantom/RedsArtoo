@@ -2,13 +2,14 @@ import drive
 import lights
 import sensors
 import XboxController
-import objects
 import multiprocessing
 import accelerometer
 import time
 import RPi.GPIO as GPIO
 import sys
+import Adafruit_NeoPixel
 from i2clibraries import i2c_hmc5883l
+from objects import *
 
 # The planning as of 02-12-2015 for the autonomous file is:
 
@@ -43,9 +44,9 @@ from i2clibraries import i2c_hmc5883l
 # 3. Wait half a minute, then turn the LEDs off
 
 # As for the Sensors:
-# % of directions| >50% | 50% with 10% margin | <50%
-# ---------------|------|---------------------|------
-# colour of front| Blue |       Purple        | Red
+# % of directions| >60% | 40-60% | <40%
+# ---------------|------|--------|------
+# colour of front| Blue | Purple | Red
 #
 # Sound direction| True | False
 # ---------------|------|--------
@@ -64,11 +65,7 @@ ShutdownRequested = False
 CurrentDirection = 0
 ChosenDirection = 0
 TurnNeeded = False
-
-DistanceProcess = multiprocessing.Process(target = distance)
-ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
-CompassProcess = multiprocessing.Process(target = compass)
-AccelerometerProcess = multiprocessing.Process(target = Accelerometer)
+indexLights = 0
 
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
@@ -200,6 +197,91 @@ def sound():
             else:
                 SoundDirectionPresent = False
                 raise ValueError('SoundDirection not present')
+
+def lights():
+    SensorOne.begin()
+    SensorTwo.begin()
+    SensorOneCurrentState = "none"
+    SensorTwoCurrentState = "none"
+    SpotLightOneCurrentState = 0
+    SpotLightTwoCurrentState = 0
+    indexLights = 0
+    while True:
+        if ShutdownRequested:
+            break
+        if SoundDirectionPresent:
+            if SensorTwoCurrentState == "none":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorTwo.setPixelColor(indexLights, 0, 255, 0)
+                    indexLights = indexLights + 1
+                SensorTwo.show()
+                SensorOneCurrentState = "green"
+            elif SensorTwoCurrentState == "green":
+                while indexLights < SensorAmountOfLeds:
+                    SensorTwo.setPixelColor(indexLights, 0, 255, 0)
+                    indexLights = indexLights + 1
+                SensorTwo.show()
+                SensorTwoCurrentState = "green"
+            elif SensorTwoCurrentState == "yellow":
+                intensity = 255
+                while intensity > -1:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorTwo.setPixelColor(indexLights, intensity, 255, 0)
+                        indexLights = indexLights + 1
+                    SensorTwo.show()
+                    intensity = intensity - 1
+                    time.sleep(0.005)
+            else:
+                raise.ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
+        if not SoundDirectionPresent:
+            if SensorTwoCurrentState == "none":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorTwo.setPixelColor(indexLights, 255, 255, 0)
+                    indexLights = indexLights + 1
+                SensorTwo.show()
+                SensorTwoCurrentState == "yellow"
+            elif SensorTwoCurrentState == "green":
+                intensity = 0
+                while intensity < 256:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorTwo.setPixelColor(indexLights, intensity, 255, 0)
+                        indexLights = indexLights + 1
+                    SensorTwo.show()
+                    intensity = intensity + 1
+                    time.sleep(0.005)
+                SensorTwoCurrentState = "yellow"
+            elif SensorTwoCurrentState == "yellow":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorTwo.setPixelColor(indexLights, 255, 255, 0)
+                    indexLights = indexLights + 1
+                SensorTwo.show()
+                SensorTwoCurrentState = "yellow"
+            else:
+                raise.ValueError('SensorTwoCurrentState is neither none nor green nor yellow')
+        if ShutdownRequested:
+            break
+        DirectionAccessabilityPercentage = 0
+        AccessibleCount = 0
+        for accessible in DirectionAccessability:
+            if accessible:
+                AccessibleCount = AccessibleCount + 1
+        DirectionAccessabilityPercentage = (AccessibleCount / 40) * 100
+        if DirectionAccessability < 40:
+            # make the thing turn red
+        elif DirectionAccessabilityPercentage >= 40 and DirectionAccessabilityPercentage <= 60:
+            # make the thing turn Purple
+        elif DirectionAccessabilityPercentage > 60:
+            # make the thing turn blue
+        else:
+            raise.ValueError('The DirectionAccessabilityPercentage a complex number, or non-existent')
+            
+
+# Work to do comes here
 
 def drive():
     DistanceProcess.start()
