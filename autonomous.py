@@ -272,14 +272,44 @@ def lights():
                 AccessibleCount = AccessibleCount + 1
         DirectionAccessabilityPercentage = (AccessibleCount / 40) * 100
         if DirectionAccessability < 40:
-            # make the thing turn red
+            if SensorOneCurrentState == "none":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorOne.setPixelColor(indexLights, 255, 0, 0)
+                    indexLights = indexLights + 1
+                SensorOne.show()
+                SensorOneCurrentState = "red"
+            elif SensorOneCurrentState == "red":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorOne.setPixelColor(indexLights, 255, 0, 0)
+                    indexLights = indexLights + 1
+                SensorOne.show()
+                SensorOneCurrentState = "red"
+            elif SensorOneCurrentState == "blue"
+                intensityOne = 0
+                intensityTwo = 255
+                while intensityOne < 256:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, intensityOne, intensityTwo, 0)
+                        indexLights = indexLights + 1
+                    SensorOne.show()
+                    intensityOne = intensityOne + 1
+                    intensityTwo = intensityTwo - 1
+                    time.sleep(0.05)
+                SensorOneCurrentState = "red"
+            elif SensorOneCurrentState == "purple"
+                # Turn the thing red
+            else:
+                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         elif DirectionAccessabilityPercentage >= 40 and DirectionAccessabilityPercentage <= 60:
             # make the thing turn Purple
         elif DirectionAccessabilityPercentage > 60:
             # make the thing turn blue
         else:
             raise.ValueError('The DirectionAccessabilityPercentage a complex number, or non-existent')
-            
+
 
 # Work to do comes here
 
