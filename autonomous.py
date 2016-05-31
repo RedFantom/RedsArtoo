@@ -275,8 +275,8 @@ def lights():
             if SensorOneCurrentState == "none":
                 indexLights = 0
                 while indexLights < SensorAmountOfLeds:
-                    SensorOne.setPixelColor(indexLights, 255, 0, 0)
                     indexLights = indexLights + 1
+                    SensorOne.setPixelColor(indexLights, 255, 0, 0)
                 SensorOne.show()
                 SensorOneCurrentState = "red"
             elif SensorOneCurrentState == "red":
@@ -292,23 +292,93 @@ def lights():
                 while intensityOne < 256:
                     indexLights = 0
                     while indexLights < SensorAmountOfLeds:
-                        SensorOne.setPixelColor(indexLights, intensityOne, intensityTwo, 0)
+                        SensorOne.setPixelColor(indexLights, intensityOne, 0, intensityTwo)
                         indexLights = indexLights + 1
                     SensorOne.show()
                     intensityOne = intensityOne + 1
-                    intensityTwo = intensityTwo - 1
                     time.sleep(0.05)
                 SensorOneCurrentState = "red"
             elif SensorOneCurrentState == "purple"
-                # Turn the thing red
+                intensityOne = 255
+                while intesityOne > -1:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, 255, 0, intensityOne)
+                        indexLights = indexLights + 1
+                    intensityOne = intensityOne - 1
+                    SensorOne.show()
+                    time.sleep(0.05)
+                SensorOneCurrentState = "red"
             else:
                 raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         elif DirectionAccessabilityPercentage >= 40 and DirectionAccessabilityPercentage <= 60:
-            # make the thing turn Purple
+            if SensorOneCurrentState == "blue":
+                intensityOne = 0
+                while intensityOne < 255:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, intensityOne, 0, 255)
+                        indexLights = indexLights + 1
+                    intensityOne = intensityOne + 1
+                    SensorOne.show()
+                    time.sleep(0.05)
+                SensorOneCurrentState = "purple"
+            elif SensorOneCurrentState == "purple" or SensorOneCurrentState == "none":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorOne.setPixelColor(indexLights, 255, 0, 255)
+                    indexLights = indexLights + 1
+                SensorOne.show()
+                SensorOneCurrentState = "purple"
+            elif SensorOneCurrentState == "red":
+                intensityOne = 0
+                while intensityOne < 256:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, 255, 0, intensityOne)
+                        indexLights = indexLights + 1
+                    intensityOne = intensityOne + 1
+                    SensorOne.show()
+                    time.sleep(0.05)
+                SensorOneCurrentState = "purple"
+            else:
+                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         elif DirectionAccessabilityPercentage > 60:
-            # make the thing turn blue
+            if SensorOneCurrentState == "red":
+                intensityOne = 0
+                intensityTwo = 255
+                while intensityOne < 256:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, intensityOne, 0, intensityTwo)
+                        indexLights = indexLights + 1
+                    intensityOne = intensityOne + 1
+                    intensityTwo = intensityTwo - 1
+                    SensorOne.show()
+                    time.sleep(0.05)
+                SensorOneCurrentState = "blue"
+            elif SensorOneCurrentState == "purple":
+                intensityOne = 0
+                while intensityOne > -1:
+                    indexLights = 0
+                    while indexLights < SensorAmountOfLeds:
+                        SensorOne.setPixelColor(indexLights, intensityOne, 0, 255)
+                        indexLights = indexLights + 1
+                    intensityOne = intensityOne - 1
+                    SensorOne.show()
+                    time.sleep(0.05)
+                SensorOneCurrentState = "blue"
+            elif SensorOneCurrentState == "blue" or SensorOneCurrentState == "none":
+                indexLights = 0
+                while indexLights < SensorAmountOfLeds:
+                    SensorOne.setPixelColor(indexLights, 0, 0, 255)
+                    indexLights = indexLights + 1
+                SensorOne.show()
+                SensorOneCurrentState = "blue"
+            else:
+                raise.ValueError('The SensorOneCurrentState is neither none nor red nor blue nor purple')
         else:
-            raise.ValueError('The DirectionAccessabilityPercentage a complex number, or non-existent')
+            raise.ValueError('The DirectionAccessabilityPercentage is a complex number, or non-existent')
 
 
 # Work to do comes here
