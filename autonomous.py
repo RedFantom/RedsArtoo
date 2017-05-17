@@ -58,7 +58,7 @@ DirectionAccessability = [False] * 40
 SoundDirection = 0
 SoundDirectionPresent = False
 CompassHeadingDegrees = 0
-CompassHeadingMinutes = 0       # This really confused me at first, but apparently minutes are one-sixtieth of a degree
+CompassHeadingMinutes = 0  # This really confused me at first, but apparently minutes are one-sixtieth of a degree
 xRotation = 0
 yRotation = 0
 ShutdownRequested = False
@@ -66,6 +66,7 @@ CurrentDirection = 0
 ChosenDirection = 0
 TurnNeeded = False
 indexLights = 0
+
 
 # This function is written in the assumption that the dome turns at 60RPM at full speed
 def distances():
@@ -126,6 +127,7 @@ def distances():
         if ShutdownRequested:
             break
 
+
 def ShutdownRequester():
     # ShutdownRequester function to check the whether the shutdown switch is turned on
     GPIO.setup(objects.ShutdownSwitch, GPIO.IN)
@@ -155,12 +157,14 @@ def compass():
         else:
             (CompassHeadingDegrees, CompassHeadingMinutes) = compass.getHeading()
 
+
 def Accelerometer():
     while True:
         if ShutDownRequested:
             Break
         else:
             (xRotation, yRotation) = accelerometer.update()
+
 
 def sound():
     while True:
@@ -197,6 +201,7 @@ def sound():
             else:
                 SoundDirectionPresent = False
                 raise ValueError('SoundDirection not present')
+
 
 def lights():
     SensorOne.begin()
@@ -398,9 +403,10 @@ def drive():
             elif distance > 50:
                 DirectionAccessability[DistanceNumber] = True
             elif distance <= 0:
-                raise ValueError ('A Distance smaller than or equal to Zero')
+                raise ValueError('A Distance smaller than or equal to Zero')
         if SoundDirectionPresent:
-            if DirectionAccessability[SoundDirection] and DirectionAccessability[SoundDirection + 1] and DirectionAccessability[SoundDirection - 1]:
+            if DirectionAccessability[SoundDirection] and DirectionAccessability[SoundDirection + 1] and \
+                    DirectionAccessability[SoundDirection - 1]:
                 if SoundDirection == 0:
                     ChosenDirection = 0
                 elif SoundDirection == 12:
@@ -408,21 +414,27 @@ def drive():
                 elif SoundDirection == 26:
                     ChosenDirection = 240
             elif not DirectionAccessability[SoundDirection]:
-                if DirectionAccessability[SoundDirection + 1]  and DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3]:
+                if DirectionAccessability[SoundDirection + 1] and DirectionAccessability[SoundDirection + 2] and \
+                        DirectionAccessability[SoundDirection + 3]:
                     ChosenDirection = (SoundDirection + 2) * 9
-                elif DirectionAccessability[SoundDirection - 1] and DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3]:
+                elif DirectionAccessability[SoundDirection - 1] and DirectionAccessability[SoundDirection - 2] and \
+                        DirectionAccessability[SoundDirection - 3]:
                     ChosenDirection = (SoundDirection - 2) * 9
-                elif DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3] and DirectionAccessability[SoundDirection + 4]:
+                elif DirectionAccessability[SoundDirection + 2] and DirectionAccessability[SoundDirection + 3] and \
+                        DirectionAccessability[SoundDirection + 4]:
                     ChosenDirection = (SoundDirection + 3) * 9
-                elif DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3] and DirectionAccessability[SoundDirection - 4]:
+                elif DirectionAccessability[SoundDirection - 2] and DirectionAccessability[SoundDirection - 3] and \
+                        DirectionAccessability[SoundDirection - 4]:
                     ChosenDirection = (SoundDirection - 3) * 9
                 else:
                     AccessibleNumber = 0
                     for Accessible in DirectionAccessability:
-                        if Accessible and DirectionAccessability[AccessibleNumber + 1] and DirectionAccessability[AccessibleNumber + 2]:
+                        if Accessible and DirectionAccessability[AccessibleNumber + 1] and DirectionAccessability[
+                                    AccessibleNumber + 2]:
                             ChosenDirection = AccessibleNumber * 9
                             break
-                        elif DirectionAccessability[-AccessibleNumber] and DirectionAccessability[-AccessibleNumber - 1] and DirectionAccessability[-AccessibleNumber - 2]:
+                        elif DirectionAccessability[-AccessibleNumber] and DirectionAccessability[
+                                    -AccessibleNumber - 1] and DirectionAccessability[-AccessibleNumber - 2]:
                             ChosenDirection = 360 - (AccessibleNumber * 9)
                             break
                         else:
@@ -430,10 +442,12 @@ def drive():
         else:
             AccessibleNumber = 0
             for Accessible in DirectionAccessAbility:
-                if Accessible and DirectionAccessAbility[AccessibleNumber + 1] and DirectionAccessAbility[AccessibleNumber + 2]:
+                if Accessible and DirectionAccessAbility[AccessibleNumber + 1] and DirectionAccessAbility[
+                            AccessibleNumber + 2]:
                     ChosenDirection = Accessible * 9
                     break
-                elif DirectionAccessability[-AccessibleNumber] and DirectionAccessability[-AccessibleNumber - 1] and DirectionAccessability[-AccessibleNumber - 2]:
+                elif DirectionAccessability[-AccessibleNumber] and DirectionAccessability[-AccessibleNumber - 1] and \
+                        DirectionAccessability[-AccessibleNumber - 2]:
                     ChosenDirection = Accessible * 9
                     break
                 else:
@@ -486,6 +500,7 @@ def drive():
         if ShutDownRequested:
             break
 
+
 def ShutDown():
     GPIO.cleanup()
     if DistanceProcess.is_alive() or ShutdownRequesterProcess.is_alive() or CompassProcess.is_alive() or AccelerometerProcess.is_alive():
@@ -503,5 +518,6 @@ def ShutDown():
         if AccelAlive:
             AccelerometerProcess.terminate()
     sys.exit()
+
 
 drive()

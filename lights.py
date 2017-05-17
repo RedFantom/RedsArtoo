@@ -2,6 +2,7 @@ import time
 import RPi.GPIO as GPIO
 import objects
 
+
 # Class to control the spotlights in the holoprojectors of the droid
 class spotlight:
     pin = 0
@@ -15,6 +16,7 @@ class spotlight:
     def setstate(self, status):
         GPIO.output(self.pin, status)
 
+
 # Class to control the rgb led's in the sensors of the droid
 class rgbled:
     pinred = 0
@@ -26,7 +28,6 @@ class rgbled:
         self.pinred = pinred
         self.pingreen = pingreen
         self.pinblue = pinblue
-
         GPIO.setup(pinred, GPIO.OUT)
         GPIO.setup(pingreen, GPIO.OUT)
         GPIO.setup(pinblue, GPIO.OUT)

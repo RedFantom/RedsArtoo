@@ -6,28 +6,28 @@ import smbus
 import neopixel
 
 # Pins on the Raspberry Pi B+, GPIO.BCM
-DistanceSensorOneTrig   =  4
-DistanceSensorOneEcho   = 17
-DistanceSensorTwoTrig   = 18
-DistanceSensorTwoEcho   = 23
+DistanceSensorOneTrig = 4
+DistanceSensorOneEcho = 17
+DistanceSensorTwoTrig = 18
+DistanceSensorTwoEcho = 23
 
-SensorOnePWMpin         = 0
-SensorTwoPWMpin         = 0
-SensorAmountOfLeds      = 4
-SpotLightOnePin         = 0
-SpotLightTwoPin         = 0
+SensorOnePWMpin = 0
+SensorTwoPWMpin = 0
+SensorAmountOfLeds = 4
+SpotLightOnePin = 0
+SpotLightTwoPin = 0
 
-OnOffSwitch             = 25
+OnOffSwitch = 25
 
-MotorDomeOne            = 5
-MotorDomeTwo            = 6
-MotorLeftOne            = 12
-MotorLeftTwo            = 13
-MotorRightOne           = 19
-MotorRightTwo           = 26
+MotorDomeOne = 5
+MotorDomeTwo = 6
+MotorLeftOne = 12
+MotorLeftTwo = 13
+MotorRightOne = 19
+MotorRightTwo = 26
 
-ShutdownSwitch          = 0
-BatterySensor           = 0
+ShutdownSwitch = 0
+BatterySensor = 0
 
 # The UART pins are GPIO 14 and 15
 # The SPI pins are GPIO 10 (MOSI), 9 (MISO), 11 (CLOCK), 8 (CE0_N) and 7 (CE1_N)
@@ -69,7 +69,7 @@ SoundSensorOne = sensors.soundsensor(SoundSensorOnePin)
 SoundSensorTwo = sensors.soundsensor(SoundSensorTwoPin)
 SoundSensorThree = sensors.soundsensor(SoundSensorThreePin)
 
-DistanceProcess = multiprocessing.Process(target = distance)
-ShutdownRequesterProcess = multiprocessing.Process(target = ShutdownRequester)
-CompassProcess = multiprocessing.Process(target = compass)
-AccelerometerProcess = multiprocessing.Process(target = Accelerometer)
+DistanceProcess = multiprocessing.Process(target=distance)
+ShutdownRequesterProcess = multiprocessing.Process(target=ShutdownRequester)
+CompassProcess = multiprocessing.Process(target=compass)
+AccelerometerProcess = multiprocessing.Process(target=Accelerometer)
